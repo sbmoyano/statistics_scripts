@@ -12,6 +12,10 @@ Granada, Spain
 Description:
 Function to compute permutation tests, being able to define the number
 of iterations and confidence intervals.
+
+Important:
+Code taken and modified from Statistical Thinking in Python (Part 2) - Datacamp
+course - by Justin Bois (Lecturer at the California Institute of Technology).
 """
 
 # =============================================================================
