@@ -13,6 +13,11 @@ Description:
 Function to compute permutation tests, being able to define the number
 of iterations and confidence intervals.
 
+In this example we can use pandas Series as Scipy.Stats spearmanr function
+allows to work with this structure type, and also allows to choose a nan
+policy. If we want to work with Numpy array will it be necessary to drop nan
+values from both array so they have the same length.
+
 Important:
 Code taken and modified from Statistical Thinking in Python (Part 2) - Datacamp
 course - by Justin Bois (Lecturer at the California Institute of Technology).
