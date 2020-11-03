@@ -55,7 +55,9 @@ def draw_perm_reps_spearman(data_1, data_2, func, iterations=1000, ci=95):
         confidence_intervals: confidence intervals.
 
     Notes:
-        To compute the p-value, compare every permutation value with the empirical value.
+        To compute the p-value, compare every permutation value with the empirical value
+        (the percentage of simulations where the simulated statistic was more extreme,
+        towards the alternative hypothesis) than the observed empirical value.
         Mark as a boolean if the value of the permuted sample is higher or equal to the
         empirical value. We sum the boolean True.
     """
