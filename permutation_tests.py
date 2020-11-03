@@ -29,13 +29,15 @@ course - by Justin Bois (Lecturer at the California Institute of Technology).
 
 import numpy as np
 import scipy.stats as stats
+import matplotlib.pyplot as plt
 
 # =============================================================================
-# PERMUTATION
+# PERFORM PERMUTATION
 # =============================================================================
 
 
 def draw_perm_reps_spearman(data_1, data_2, func, iterations=1000, ci=95):
+    
     """
     Generate multiple permutation replicates.
 
@@ -120,14 +122,64 @@ def draw_perm_reps_spearman(data_1, data_2, func, iterations=1000, ci=95):
     # Compute p-value
     p_value = np.sum(perm_replicates >= empirical_r) / len(perm_replicates)
 
-    return p_value, confidence_intervals
+    return perm_replicates, p_value, confidence_intervals
+
+
+# =============================================================================
+# PLOT PERMUTATION REPLICATES
+# =============================================================================
+
+
+def plot_permutation_replicates(empirical_test_statistic, perm_replicates, bins):
+    
+    """
+    Plot normed histogram of permutation replicates.
+
+    Input:
+        empirical_test_statistic: empirical value of the test statistic computed with data
+                                  of the original dataset.
+        perm_replicates: array with all the permutation replicates of the test statistic.
+        bins (int): number of bins for the histogram.
+
+    Output:
+        Normed histogram with vertical line set at the value of the empirical test
+        statistic. Legend also added with the value of the empirical test statistic.
+    """
+
+    # plot permutation replicates
+    plt.hist(perm_replicates, density=True, bins=bins)
+    # set vertical line to empirical test statistic value
+    plt.axvline(x=empirical_corr, label='line at x = {}'.format(empirical_test_statistic), linestyle='--',
+                color='black')
+    plt.legend()
+    plt.show()
+
 
 # =============================================================================
 # DEFINE FUNCTION TO PERFORM TEST IF NEEDED
 # =============================================================================
 
 
+def ecdf(data):
+    
+    """
+    Compute ECDF for a one-dimensional array of measurements.
+    """
+
+    # Number of data points: n
+    n = len(data)
+
+    # x-data for the ECDF: x
+    x = np.sort(data)
+
+    # y-data for the ECDF: y
+    y = np.arange(1, len(data) + 1) / n
+
+    return x, y
+
+
 def spearman_r(data_1, data_2):
+    
     """
     Compute Spearman rank correlation coefficient and p-value between
     two arrays.
@@ -145,10 +197,17 @@ def spearman_r(data_1, data_2):
 
     return corr_coef, p_value
 
+
 # =============================================================================
 # EXAMPLE
 # =============================================================================
 
 
-p, ci = draw_perm_reps_spearman(DataFrame['column_name_1'], DataFrame['column_name_2'], spearman_r, 10000, 95)
-print(p, ci)
+# perform permutation
+perm_replicates, p_value, confidence_intervals = draw_perm_reps_spearman(DataFrame['column_name_1'], 
+                                                                         DataFrame['column_name_2'], 
+                                                                         spearman_r, 10000, 95)
+# compute empirical test statistic
+empirical_test_statistic, empirical_p_value = spearman_r(DataFrame['column_1'], DataFrame['column_2'])
+# plot permutation replicates
+plot_permutation_replicates(empirical_test_statistic, perm_replicates, bins)
