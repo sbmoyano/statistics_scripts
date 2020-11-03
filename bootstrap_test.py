@@ -30,6 +30,7 @@ import pandas as pd
 import scipy.stats as stats
 import numpy as np
 import pingouin as pg
+import matplotlib.pyplot as plt
 
 # =============================================================================
 # BOOTSTRAP (SINGLE DATA SET)
@@ -82,6 +83,12 @@ def bootstrap(data, func, iterations=1, ci=95):
     for i in range(iterations):
         # resample from the array of data randomly and apply function
         bs_replicates[i] = func(np.random.choice(data, size=len(data)))
+
+    # plot the histogram of the replicates
+    plt.hist(bs_replicates, bins=50)
+    plt.xlabel('x_label')
+    plt.ylabel('y_label')
+    plt.show()
 
     # get confidence intervals of the bootstrapped statistic
     confidence_intervals = np.percentile(bs_replicates, percentiles)
@@ -145,7 +152,13 @@ def bootstrap_pairs(data_1, data_2, func, iterations=1, ci=95):
         spearman_r_empirical, p_value_empirical = func(bs_x, bs_y)
         # Add to permuted results
         bs_replicates[i] = spearman_r_empirical
-    
+
+    # Plot the histogram of the replicates
+    plt.hist(bs_replicates, bins=50)
+    plt.xlabel('x_label')
+    plt.ylabel('y_label')
+    plt.show()
+
     # Get confidence intervals
     confidence_intervals = np.percentile(bs_replicates, percentiles)
 
@@ -218,6 +231,51 @@ def boostrap_pairs_lin_reg(data_1, data_2, func, iterations=1, ci=95):
 # =============================================================================
 
 
+def plot_bs_reg(bs_slope_reps, bs_intercept_reps, data_1, data_2, n_reg_lines):
+
+    """
+    Plot multiple regression lines from a bootstrapped sample.
+
+    Input:
+        bs_slope_reps: bootstrapped slope.
+        bs_intercept_reps: bootstrapped intercept.
+        data_1: original x data.
+        data_2: original y data.
+        n_reg_lines: number of regression lines to be plotted.
+    Output:
+        Scatter plot with multiple regression lines fitted form bootstrapped
+        sample.
+    """
+
+    # Plot the regression lines
+    for i in range(n_reg_lines):
+        plt.plot(data_1, bs_slope_reps[i] * data_1 + bs_intercept_reps[i], linewidth=0.5, alpha=0.2, color='red')
+
+    # Plot the empirical data
+    plt.plot(data_1, data_2, marker='.', linestyle='none')
+    plt.xlabel('x_label')
+    plt.ylabel('y_label')
+    plt.show()
+
+
+def ecdf(data):
+
+    """
+    Compute ECDF for a one-dimensional array of measurements.
+    """
+
+    # Number of data points: n
+    n = len(data)
+
+    # x-data for the ECDF: x
+    x = np.sort(data)
+
+    # y-data for the ECDF: y
+    y = np.arange(1, len(data)+1) / n
+
+    return x, y
+
+
 def spearman_r(data_1, data_2):
 
     """
@@ -266,3 +324,4 @@ def lin_reg(data_1, data_2):
 bs, ci = bootstrap(DataFrame['column'], np.mean, 10000, 95)
 bs, ci = bootstrap_pairs(DataFrame['column_1'], DataFrame['column_2'], spearman_r, 10000, 95)
 bs_slope, bs_intercept, ci = boostrap_pairs_lin_reg(DataFrame['column_1'], DataFrame['column_2'], lin_reg, 10000, 95)
+plot_bs_reg(bs_slope, bs_intercept, DataFrame['column_1'], DataFrame['column_2'], 100)
