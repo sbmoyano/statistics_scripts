@@ -145,8 +145,9 @@ def bootstrap_pairs(data_1, data_2, func, iterations=1, ci=95):
         spearman_r_empirical, p_value_empirical = func(bs_x, bs_y)
         # Add to permuted results
         bs_replicates[i] = spearman_r_empirical
-        # get confidence intervals
-        confidence_intervals = np.percentile(bs_replicates, percentiles)
+    
+    # Get confidence intervals
+    confidence_intervals = np.percentile(bs_replicates, percentiles)
 
     return bs_replicates, confidence_intervals
 
