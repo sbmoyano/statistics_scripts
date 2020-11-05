@@ -95,8 +95,9 @@ def draw_perm_reps_spearman(data_1, data_2, func, iterations=1000, ci=95):
         perm_sample_2 = permuted_data[len(data_1):]
 
         return perm_sample_1, perm_sample_2
-
-    empirical_r, empirical_p = func(data_1, data_2)
+    
+    # Compute empirical values
+    empirical_test_stats, empirical_p = func(data_1, data_2)
 
     # Initialize array of replicates: perm_replicates
     perm_replicates = np.empty(iterations)
@@ -106,10 +107,10 @@ def draw_perm_reps_spearman(data_1, data_2, func, iterations=1000, ci=95):
         perm_sample_1, perm_sample_2 = permutation_sample(data_1, data_2)
 
         # Compute the test statistic. Change if needed.
-        spearman_r_empirical, p_value_empirical = func(perm_sample_1, perm_sample_2)
+        permuted_test_stats, permuted_p = func(perm_sample_1, perm_sample_2)
 
         # Add to permutes results
-        perm_replicates[i] = spearman_r_empirical
+        perm_replicates[i] = permuted_test_stats
 
     # Chose percentiles based on the percentage of confidence intervals
     if ci == 95:
