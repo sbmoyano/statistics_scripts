@@ -121,7 +121,7 @@ def draw_perm_reps_spearman(data_1, data_2, func, iterations=1000, ci=95):
     # Compute confidence intervals
     confidence_intervals = np.percentile(perm_replicates, percentiles)
     # Compute p-value
-    p_value = np.sum(perm_replicates >= empirical_r) / len(perm_replicates)
+    p_value = np.sum(perm_replicates >= empirical_test_stats) / len(perm_replicates)
 
     return perm_replicates, p_value, confidence_intervals
 
