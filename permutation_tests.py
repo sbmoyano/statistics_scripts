@@ -143,22 +143,23 @@ def plot_permutation_replicates(empirical_test_statistic, perm_replicates, bins)
     
     """
     Plot normed histogram of permutation replicates.
-
+    
     Input:
         empirical_test_statistic: empirical value of the test statistic computed with data
                                   of the original dataset.
         perm_replicates: array with all the permutation replicates of the test statistic.
         bins (int): number of bins for the histogram.
-
     Output:
         Normed histogram with vertical line set at the value of the empirical test
         statistic. Legend also added with the value of the empirical test statistic.
     """
-
+    
+    sns.set_style('darkgrid')
+    plt.figure(figsize=(8,5))
     # plot permutation replicates
-    plt.hist(perm_replicates, density=True, bins=bins)
+    plt.hist(perm_replicates, density=True, bins=bins, color='indianred')
     # set vertical line to empirical test statistic value
-    plt.axvline(x=empirical_corr, label='line at x = {}'.format(empirical_test_statistic), linestyle='--',
+    plt.axvline(x=empirical_test_statistic, label='line at x = {}'.format(empirical_test_statistic), linestyle='--',
                 color='black')
     plt.legend()
     plt.show()
