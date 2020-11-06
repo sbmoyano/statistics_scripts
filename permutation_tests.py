@@ -122,8 +122,16 @@ def draw_perm_reps_spearman(data_1, data_2, func, iterations=1000, ci=95):
     confidence_intervals = np.percentile(perm_replicates, percentiles)
     # Compute p-value
     p_value = np.sum(perm_replicates >= empirical_test_stats) / len(perm_replicates)
-
-    return perm_replicates, p_value, confidence_intervals
+    # Another form to compute p-value
+    # p_value = len(np.where(perm_replicates >= empirical_test_stats)[0]) / len(perm_replicates)
+    # dictionary with values to return
+    to_return = {'empirical test statistic': empirical_test_stats, 
+                 'empirical p value': empirical_p,
+                 'permutation replicates': perm_replicates, 
+                 'permutation p value': p_value,
+                 'permutation ci': confidence_intervals}
+    
+    return to_return
 
 
 # =============================================================================
@@ -205,10 +213,9 @@ def spearman_r(data_1, data_2):
 
 
 # perform permutation
-perm_replicates, p_value, confidence_intervals = draw_perm_reps_spearman(DataFrame['column_name_1'], 
-                                                                         DataFrame['column_name_2'], 
-                                                                         spearman_r, 10000, 95)
-# compute empirical test statistic
-empirical_test_statistic, empirical_p_value = spearman_r(DataFrame['column_1'], DataFrame['column_2'])
+dict_results = draw_perm_reps_spearman(DataFrame['column_name_1'], 
+                                       DataFrame['column_name_2'], 
+                                       spearman_r, 10000, 95)
+
 # plot permutation replicates
-plot_permutation_replicates(empirical_test_statistic, perm_replicates, bins)
+plot_permutation_replicates(dict_results['empirical test statistic'], dict_results['permutation replicates'], 30)
